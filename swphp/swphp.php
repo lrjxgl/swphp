@@ -40,7 +40,7 @@ class Swphp{
 				break;
 			default:
 				$mClass="App\index\\".$m."Control";
-				View::$template_dir=ROOT_PATH."views";
+				View::$template_dir=ROOT_PATH."views/default/index";
 				break;		
 		}
 		
@@ -63,12 +63,20 @@ class Swphp{
 		$response->header("Content-Type", "text/html;charset=utf8;");
 		$response->end($message);
 	}
+	public static function goAll($message,$error=0,$data=array(),$url="/"){
+		$result=array(
+			"error"=>$error,
+			"message"=>$message,
+			"data"=>$data
+		);
+		return $result;
+	}
 	public static function display($result){
 		$response=self::$response;
 		if(empty($result)){
 			$$result="\n";
 		}
-		$response->header("Content-Type", "text/html");
+		$response->header("Content-Type", "text/html;charset=utf8;");
 		if(is_array($result)){
 			$result=json_encode($result);
 		}

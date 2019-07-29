@@ -1,11 +1,12 @@
 <?php
 namespace App\index;
 use \Swphp\View;
+use \Swphp\session;
 class IndexControl {
 	
 	public function onIndex(){
 		$list=array();
-		$list=\Swphp\M("mod_b2b_product")->select(array(
+		$list=\Swphp\M("article")->select(array(
 			"limit"=>"10"
 		));
 		$test=\Swphp\M("article")->test();
@@ -14,6 +15,7 @@ class IndexControl {
 		));
 		$redata=array(
 			"error"=>0,
+			"ssuser"=>session::get("ssuser"),
 			"message"=>"首页展示成功了",
 			"data"=>array(
 				"title"=>"swphp"
@@ -29,7 +31,11 @@ class IndexControl {
 	}
 	public function onShow(){
 		$id=$_GET["id"];
-		$data=\Swphp\M("mod_b2b_product")->selectRow("id=".$id);
+		$data=\Swphp\M("article")->selectRow("id=".$id);
+		$data["content"]=\Swphp\M("article_data")->selectOne(array(
+			"where"=>"id=".$id,
+			"fields"=>"content"
+		));
 		View::assign(array(
 			"data"=>$data
 		));

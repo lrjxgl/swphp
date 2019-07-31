@@ -22,9 +22,9 @@ function loadFile($dir){
 file_put_contents("start.lock",0);
 $http = new swoole_http_server("0.0.0.0", 9501);
 $http->set(array(
-    'upload_tmp_dir' => ROOT_PATH."/temp/upload",
-	'document_root' => ROOT_PATH."/document_root",	
-	'enable_static_handler' => true,
+    'upload_tmp_dir' => Config\App::$upload_tmp_dir,
+	'document_root' => Config\App::$document_root,	
+	'enable_static_handler' => Config\App::$enable_static_handler,
 ));
 $http->on("start", function ($server) {
     echo "Swoole http server is started at http://127.0.0.1:9501\n";

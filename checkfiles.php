@@ -1,54 +1,54 @@
 <?php
-$checkfiles=array();
-function getFiles($dir){
-	global $checkfiles;
-	$op=opendir($dir);
-	while(false!==$file=readdir($op)){
-		if($file!="." && $file!=".."){
-			if(is_file($dir."/".$file)){
-				$checkfiles[]=$dir."/".$file;
-			}elseif(is_dir($dir."/".$file)){
-				getFiles($dir."/".$file);
+namespace Reload;
+class CheckFile{
+	public static $dirs=array("app","swphp");
+	public static $checkfiles=array();
+	public static $olds=array();
+	public static function getFiles($dir){
+		$op=opendir($dir);
+		while(false!==$file=readdir($op)){
+			if($file!="." && $file!=".."){
+				if(is_file($dir."/".$file)){
+					self::$checkfiles[]=$dir."/".$file;
+				}elseif(is_dir($dir."/".$file)){
+					self::getFiles($dir."/".$file);
+				}
 			}
 		}
 	}
-}
-
-function getAllFiles(){
-	getFiles("app");
-	getFiles("swphp");
-}
-function checkFiles(){
-	global $checkfiles;
-	getAllFiles();
-	$news=array();
-	foreach( $checkfiles as $file){
-		$news[$file]=date("H:i:s",filemtime($file));
+	public static function getAllFiles(){
+		foreach(self::$dirs as $dir){
+			self::getFiles($dir);
+		}
 	}
-	if(!isset($_SESSION["checkfiles"])){
-		echo "unsession";
-		$_SESSION["checkfiles"]=$news;
-		return false;
-	}
-	
-	$olds=$_SESSION["checkfiles"];
-	 
-	$_SESSION["checkfiles"]=$news;
-	 
-	if(!empty($olds)){
-		
-		foreach($news as $k=>$v){
+	public static function checkFiles(){
+		 
+		self::getAllFiles();
+		$news=array();
+		foreach( self::$checkfiles as $file){
+			$news[$file]=date("H:i:s",filemtime($file));
+		}
+		if(empty(self::$olds)){
+			self::$olds=$news;
+			return false;
+		}
+		$olds=self::$olds;
+		self::$olds=$news;
+		 
+		if(!empty($olds)){
 			
-			if($v!=$olds[$k]){
-				return true;
+			foreach($news as $k=>$v){
+				
+				if($v!=$olds[$k]){
+					return true;
+				}
 			}
+			return false;
+		}else{
+			return false;
 		}
-		return false;
-	}else{
-		return false;
+		
+		
 	}
-	
-	
+
 }
-$res=checkFiles();
-var_dump($res);

@@ -1,5 +1,6 @@
 <?php
 namespace Swphp;
+
 class DB
 {
 	public $db;
@@ -21,6 +22,8 @@ class DB
 		 $this->charset=$data['charset'];
 		 if(defined("TESTMODEL") && TESTMODEL==true){
 			 $this->testmodel=true;
+		 }else{
+			 if(define("TESTMODEL",false));
 		 }
 		  
 		 
@@ -68,8 +71,7 @@ class DB
 		}
 	 	if(!@$this->db->ping()){
 	 		$this->connect();
-	 		return $this->query($sql,$param);
-	 		 
+	 		return $this->query($sql,$param);		 
 	 	}
 	
 		$this->sql=$sql;
@@ -90,11 +92,12 @@ class DB
 		if($this->errno() >0 ){
 			$e=$this->error();
 			if(TESTMODEL){
-				Swphp::error("sql错误：".$sql." ".$e);
-				exit;
+				Swphp::getinstance()->error("sql错误：".$sql." ".$e);
+				
+				return false;
 			}else{
-				Swphp::error("sql错误");
-				exit;
+				Swphp::getinstance()->error("sql错误");
+				return false;
 			}
 		};
 		return $this->query;
@@ -257,6 +260,9 @@ class DB
 	 */
 	public function getAll($sql,$param=array()){
 		$res=$this->query($sql,$param);
+		if(!$res){
+			return false;
+		}
 		$data=array();
 		if($res!==false)
 		{
@@ -278,7 +284,9 @@ class DB
 	 */
 	public function getOne($sql,$param=array()){
 		$res=$this->query($sql,$param);
-		
+		if(!$res){
+			return false;
+		}
 		if($res !==false){
 			$rs=$res->fetch_array(MYSQLI_ASSOC);
 			 
@@ -299,7 +307,9 @@ class DB
 	/*获取一行*/
 	 public function getRow($sql,$param=array()){
         $res = $this->query($sql,$param);
-        
+        if(!$res){
+        	return false;
+        }
         if ($res !== false){
 		 	
 			$arr=$res->fetch_array(MYSQLI_ASSOC);
@@ -313,6 +323,9 @@ class DB
     public function getCols($sql,$param=array())
 	{
 		$res=$this->query($sql,$param);
+		if(!$res){
+			return false;
+		}
 		$data=array();
 		if($res!==false){
 			while($rs=$res->fetch_array(MYSQLI_ASSOC)){

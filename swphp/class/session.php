@@ -1,36 +1,46 @@
 <?php
 namespace Swphp;
 class Session{
+	public static $maxid=0;
 	public static $ssids=array();
 	public static $data=array();
-	public static function start(){
+	public $request;
+	public $response;
+	public function __construct($request,$response){
+		$this->request=$request;
+		$this->response=$response;
+	}
+	public function start(){
 		self::get_session_id();
 	}
-	public static function get_session_id(){
-		if(isset(Swphp::$request->cookie["session_id"])){
+	public function get_session_id(){
+		if(isset($this->request->cookie["session_id"])){
 			self::update_session_expire();
-			return Swphp::$request->cookie["session_id"];
+			return $this->request->cookie["session_id"];
 		}
-		$session_id=Swphp::$request->cookie["session_id"];
-		Swphp::$maxid++;
-		$val=time().Swphp::$maxid;
+		$session_id=$this->request->cookie["session_id"];
+		self::$maxid++;
+		$val=time()."-".self::$maxid;
 		$time=time()+3600;
 		self::$ssids[$val]=$time;
-		Swphp::$response->cookie("session_id",$val,$time);
+		$this->response->cookie("session_id",$val,$time);
 		return $val;
 	}
-	public static function update_session_expire(){
+	public function update_session_expire(){
 		$time=time()+3600;
-		Swphp::$response->cookie("session_id",Swphp::$request->cookie["session_id"],$time);
+		$this->response->cookie("session_id",$this->request->cookie["session_id"],$time);
 	}
 	
-	public static function set($k,$v){
+	public function set($k,$v){
 		$session_id=self::get_session_id();
 		self::$data[$session_id][$k]=$v;
 	}
-	public static function get($k){
+	public function get($k){
 		$session_id=self::get_session_id();
-		return self::$data[$session_id][$k];
+		if(isset(self::$data[$session_id][$k])){
+			return self::$data[$session_id][$k];
+		}
+		
 	}
 }
 ?>

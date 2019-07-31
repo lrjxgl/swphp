@@ -11,7 +11,7 @@
 			<div class="d-title ">
 				<?=$data["title"];?>
 			</div>
-
+ 
 			<div class="d-content">
 				<?=$data["content"]?>
 			</div>

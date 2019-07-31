@@ -1,11 +1,11 @@
 <?php
-namespace Swphp;
+namespace Config;
 \define("TABLE_PRE","sky_");
-class DBconfig{
+class Db{
 	public static $VMDBS=array();
 	public static $config=array(
 		"master"=>array(
-			"host"=>"192.168.1.3",
+			"host"=>"localhost",
 			"user"=>"root",
 			"pwd"=>"123",
 			"database"=>"fd175"

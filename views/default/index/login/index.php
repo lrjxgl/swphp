@@ -16,6 +16,11 @@
 				<div class="input-flex-label">密码</div>
 				<input type="password" class="input-flex-text" id="password" type="text" placeholder="请输入密码" passowrd />
 			</div>
+			<div class="input-flex">
+				<div class="input-flex-label">验证码</div>
+				<input type="text" class="input-flex-text" id="yzm" name="yzm" />
+				<img src="/index.php?m=checkcode" />
+			</div>	
 			<div class="row-box">
 				<div class="btn-row-submit" id="login-submit">登录</div>
 				 
@@ -28,7 +33,8 @@
 			$(document).on("click","#login-submit",function(){		
 				$.post("/index.php?m=login&a=loginSave&ajax=1",{
 					telephone:$("#telephone").val(),
-					password:$("#password").val()
+					password:$("#password").val(),
+					yzm:$("#yzm").val()
 					 
 				},function(data){
 					if(data.error==1){

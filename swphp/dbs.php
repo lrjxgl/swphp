@@ -4,37 +4,38 @@ namespace Swphp;
 class Dbs{
 	static $_DBS=array();
 	static $_MDS=array();
+	static $testnum=1;
 }
 
 /**处理分布式数据库**/
 function in_VMDBS($table){
 
-	if(isset(DBconfig::$VMDBS[$table])){
-		return DBconfig::$VMDBS[$table];
+	if(isset(\Config\Db::$VMDBS[$table])){
+		return \Config\Db::$VMDBS[$table];
 	}else{
 		return false;
 	}
 }
 function setDb($table='master'){
  
-	$dbconfig=DBconfig::$config;
+	$dbConfig=\Config\Db::$config;
 	if(isset(Dbs::$_DBS[$table])) return Dbs::$_DBS[$table];
-	if(isset($dbconfig[$table])){
+	if(isset($dbConfig[$table])){
 		Dbs::$_DBS[$table]=new DB();
-		Dbs::$_DBS[$table]->connect($dbconfig[$table]);
+		Dbs::$_DBS[$table]->connect($dbConfig[$table]);
 		return Dbs::$_DBS[$table];
 	}elseif($tb=in_VMDBS($table)){
 		if(isset(Dbs::$_DBS[$tb])) return Dbs::$_DBS[$tb];
 		Dbs::$_DBS[$tb]=new DB();
-		Dbs::$_DBS[$tb]->connect($dbconfig[$tb]);
+		Dbs::$_DBS[$tb]->connect($dbConfig[$tb]);
 		return Dbs::$_DBS[$tb];
 	}else{
 		if(isset(Dbs::$_DBS['master'])){
 			return Dbs::$_DBS['master'];
 		}else{
-			if(isset($dbconfig['master'])){
+			if(isset($dbConfig['master'])){
 				Dbs::$_DBS['master']=new DB();
-				Dbs::$_DBS['master']->connect($dbconfig['master']);				
+				Dbs::$_DBS['master']->connect($dbConfig['master']);				
 				return Dbs::$_DBS['master'];
 			}else{
 				Swphp::error("empty".$table);

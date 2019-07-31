@@ -2,9 +2,13 @@
 namespace App\index;
 use \Swphp\View;
 use \Swphp\session;
-class IndexControl {
-	
+class IndexControl extends \Swphp\Control {
+	public $session;
+	public function init(){
+		$this->session=new Session($this->request,$this->response);
+	}
 	public function onIndex(){
+		
 		$list=array();
 		$list=\Swphp\M("article")->select(array(
 			"limit"=>"10"
@@ -15,37 +19,59 @@ class IndexControl {
 		));
 		$redata=array(
 			"error"=>0,
-			"ssuser"=>session::get("ssuser"),
+			"ssuser"=>$this->session->get("ssuser"),
 			"message"=>"首页展示成功了",
 			"data"=>array(
 				"title"=>"swphp"
 			),
 			"list"=>$list,
 			"test"=>$test,
-			"product"=>$product
+			"product"=>$product,
+			"testnum"=>\Swphp\Dbs::$testnum
 			 
 		);
-		View::assign($redata);
-		return View::display("index");
+		$this->view->assign($redata);
+		
+		return $this->view->display("index");
 		return $redata;
 	}
 	public function onShow(){
-		$id=$_GET["id"];
+		
+		$id=$this->_get("id");
+		if(!$id){
+			return $this->goAll("参数出错",1);
+		}
+		$obj=$this;
+		\Swoole\Timer::after(5000,function() use ($obj){
+			echo $obj->_get("id");
+			
+		});
 		$data=\Swphp\M("article")->selectRow("id=".$id);
 		$data["content"]=\Swphp\M("article_data")->selectOne(array(
 			"where"=>"id=".$id,
 			"fields"=>"content"
 		));
-		View::assign(array(
-			"data"=>$data
+		\Swphp\Dbs::$testnum=2;
+		$this->view->assign(array(
+			"data"=>$data,
+			"testnum"=>\Swphp\Dbs::$testnum
 		));
-		return View::display("show");
+		return $this->view->display("show");
+	}
+	public function onUpImg(){
+		return $this->view->display("upimg");
 	}
 	public function onSession(){
-		\Swphp\Session::set("time",date("Y-m-d H:i:s"));
-		return \Swphp\Session::get("time");
+		$this->session->set("time",date("Y-m-d H:i:s"));
+		return $this->session->get("time");
 	}
 	public function onGet(){
-		return \Swphp\Session::get("time");
+	
+		return $this->session->get("time");
+	}
+	public function onTest(){
+		\Swphp\Swphp::getinstance()->error("test exception");
+		echo "hi exeption";
+		
 	}
 }

@@ -11,6 +11,7 @@
 	<?php if(!empty($ssuser)): ?>
 	<div class="title">欢迎您，<?=$ssuser["nickname"]?></div>
 	<?php endif;?>
+	 
 	<?php 
 		if($list):
 		foreach($list as $item):

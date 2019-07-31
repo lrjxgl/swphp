@@ -8,7 +8,7 @@ class reloadSwoole{
 	public static function run(){
 		Swoole\Timer::tick(1000,function(){
 				if(!file_exists("start.lock")){
-					exec(self::$startCommand);
+					echo system(self::$startCommand);
 				}
 			});
 	}

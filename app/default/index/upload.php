@@ -7,7 +7,7 @@ class UploadControl extends \Swphp\Control{
 		$up=new Upload();
 		$_FILES=$this->request->files;
 		$res=$up->uploadfile("upimg");
-		return $res["filename"];
+		return '<img src="'.$res["filename"].'">';
 	}
 }
 ?>

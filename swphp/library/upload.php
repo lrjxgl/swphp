@@ -74,7 +74,7 @@ class upload{
 		if(move_uploaded_file($from,$to))
 		{
 			@unlink($from);
-			$to=str_replace("document_root","",$to);
+			$to=str_replace(str_replace(ROOT_PATH,"",\Config\App::$document_root),"",$to);
 			return array('err'=>0,'filename'=>$to,"original"=>$original,"type"=>$type,"size"=>round($size/1048576,2));		
 		}else
 		{

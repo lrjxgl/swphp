@@ -30,7 +30,7 @@ class IndexControl extends \Swphp\Control {
 			"testnum"=>\Swphp\Dbs::$testnum
 			 
 		);
-		$this->view->assign($redata);
+		$this->view->goAssign($redata);
 		
 		return $this->view->display("index");
 		return $redata;

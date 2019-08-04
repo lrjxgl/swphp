@@ -53,7 +53,7 @@ class DB
 		}
 		$this->db=new \mysqli($master['host'],$master['user'],$master['pwd'],$master['database'],$port);
 	 	if ($this->db->connect_error) {
-		    Swphp::error('Connect Error (' . $this->db->connect_errno . ') '
+		    Swphp::getinstance()->error('Connect Error (' . $this->db->connect_errno . ') '
 		            . $this->db->connect_error);
 		}
 		$this->db->query("SET sql_mode=''"); 

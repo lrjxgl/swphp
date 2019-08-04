@@ -17,9 +17,14 @@ class View{
 	
 	public  function goAssign($tpl_var, $value = ''){
 		
-		if(get('ajax')){
-			
-			C()->goAll("success",0,$tpl_var);
+		if($this->request->get["ajax"]){
+			$data=json_encode(array(
+				"error"=>0,
+				"message"=>"success",
+				"data"=>$tpl_var
+			));
+			$this->response->end($data);
+			sExit();
 		}else{
 			$this->assign($tpl_var,$value);
 		}
@@ -78,7 +83,7 @@ class View{
 		}
 		$tpl=$this->template_dir."/".$filename;
 		if(!file_exists($tpl)) {
-			return $this->response->write($tpl."模板不存在");
+			return Swphp::getinstance()->error($tpl."模板不存在");
 			
 		}
 		require $tpl;
@@ -89,7 +94,7 @@ class View{
 	
 	public   function inc($filename){
 		if(!file_exists($this->template_dir."/".$filename)){
-			return $this->response->write($filename."模板不存在");
+			return Swphp::getinstance()->error($filename."模板不存在");
 		}  
 		if(!empty($this->_var)){
 			extract($this->_var);

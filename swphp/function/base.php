@@ -1,4 +1,10 @@
 <?php
+namespace Swphp;
+
+function sExit(){
+	throw new \Exception("exit");
+	
+}
 function skyLog($file,$content){
 	$file=ROOT_PATH."temp/log/".$file;
 	umkdir(ROOT_PATH."temp/log/");
